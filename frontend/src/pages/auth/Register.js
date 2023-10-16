@@ -1,51 +1,55 @@
-import React, { useState ,useRef} from "react";
-import axios from "axios";
+import React, { useContext ,useRef} from "react";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
+import axios from "axios";
+import Form from "react-bootstrap/Form";
 
-const Register = () => {
-  const [username, setUsername] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [phonenumber, setPhonenumber] = useState("")
-  const [confirmpassword, setConfirmpassword] = useState("")
-  const [selectedmfatype, setSelectedmfatype] = useState("")
+function Register() {
   const usernameRef = useRef(null);
   const emailRef = useRef(null);
   const phonenumberRef = useRef(null);
   const mfatype = useRef(null);
   const passwordRef = useRef(null);
   const confpasswordRef = useRef(null);
-  const Submit=async (e)=> {
+  const { username, setUsername,
+    email, setEmail,
+    phonenumber, setPhonenumber,
+    password, setPassword,
+    confirmpassword, setConfirmpassword,
+    selectedmfatype, setSelectedmfatype } = useContext(AuthContext);
+  console.log(email);
+  const Submit =async (e) => {
     e.preventDefault();
     await axios.post("http://localhost:5000/register", {
-        username,
-        email,
-        phonenumber,
-        selectedmfatype,
-        password,
-        confirmpassword
-      })
-      .then((res)=>{
-        console.log(res.data);
-        usernameRef.current.value = ""
-        emailRef.current.value = ""
-        phonenumberRef.current.value = ""
-        mfatype.current.value = ""
-        passwordRef.current.value = ""
-        confpasswordRef.current.value = ""
-    })
-    .catch((error) => {
-      console.log(error)
-  })
-    console.log( username+","+email + ","+selectedmfatype+ ","+ phonenumber+ ","+ password+ ","+ confirmpassword)
-    
+              username,
+              email,
+              phonenumber,
+              selectedmfatype,
+              password,
+              confirmpassword
+            })
+            .then((res)=>{
+              console.log(res.data);
+              usernameRef.current.value = ""
+              emailRef.current.value = ""
+              phonenumberRef.current.value = ""
+              mfatype.current.value = ""
+              passwordRef.current.value = ""
+              confpasswordRef.current.value = ""
+          })
+          .catch((error) => {
+            console.log(error)
+        })
+          console.log( username+","+email + ","+selectedmfatype+ ","+ phonenumber+ ","+ password+ ","+ confirmpassword)
+          
   }
+
   return (
-    <div >
-      <h1>Register</h1>
-      <form  onSubmit={Submit} className="w-25 m-auto">
+    <div>
+    <Form onSubmit={Submit} action="post" className="w-25 m-auto">
+      <h2 className="text-center">Register</h2>
       <div className="d-flex justify-content-between">
-      <label htmlFor="username">Username</label>
+       <label htmlFor="username">Username</label>
       <input ref={usernameRef}
           id="username"
           type="text"
@@ -53,7 +57,7 @@ const Register = () => {
           placeholder="Username"
           name="username" autoComplete="off" 
         />
-      </div>
+      </div><br />
         <div className="d-flex justify-content-between">
         <label htmlFor="email">Email</label>
         <input ref={emailRef}
@@ -113,16 +117,145 @@ const Register = () => {
           <button className="w-25 m-auto" type="submit">Register</button>
           <p className=" m-auto">Wanna Login?</p>
         </div>
-        
-      </form>
-      
-      <br />
-      <Link className="d-flex justify-content-center" to="/login">Please Login Here....</Link>
+        <br />
+       <Link className="d-flex justify-content-center" to="/login">Please Login Here....</Link>
+
+    </Form>
     </div>
   );
 }
+
 export default Register;
 
+
+// =====================
+
+// import React, { useState ,useRef} from "react";
+// import axios from "axios";
+// import { Link } from "react-router-dom";
+
+// const Register = () => {
+//   const [username, setUsername] = useState("")
+//   const [email, setEmail] = useState("")
+//   const [password, setPassword] = useState("")
+//   const [phonenumber, setPhonenumber] = useState("")
+//   const [confirmpassword, setConfirmpassword] = useState("")
+//   const [selectedmfatype, setSelectedmfatype] = useState("")
+//   const usernameRef = useRef(null);
+//   const emailRef = useRef(null);
+//   const phonenumberRef = useRef(null);
+//   const mfatype = useRef(null);
+//   const passwordRef = useRef(null);
+//   const confpasswordRef = useRef(null);
+//   const Submit=async (e)=> {
+//     e.preventDefault();
+//     await axios.post("http://localhost:5000/register", {
+//         username,
+//         email,
+//         phonenumber,
+//         selectedmfatype,
+//         password,
+//         confirmpassword
+//       })
+//       .then((res)=>{
+//         console.log(res.data);
+//         usernameRef.current.value = ""
+//         emailRef.current.value = ""
+//         phonenumberRef.current.value = ""
+//         mfatype.current.value = ""
+//         passwordRef.current.value = ""
+//         confpasswordRef.current.value = ""
+//     })
+//     .catch((error) => {
+//       console.log(error)
+//   })
+//     console.log( username+","+email + ","+selectedmfatype+ ","+ phonenumber+ ","+ password+ ","+ confirmpassword)
+    
+//   }
+//   return (
+//     <div >
+//       <h1>Register</h1>
+//       <form  onSubmit={Submit} className="w-25 m-auto">
+//       <div className="d-flex justify-content-between">
+//       <label htmlFor="username">Username</label>
+//       <input ref={usernameRef}
+//           id="username"
+//           type="text"
+//           onChange={(e) => {setUsername(e.target.value)}}
+//           placeholder="Username"
+//           name="username" autoComplete="off" 
+//         />
+//       </div><br />
+//         <div className="d-flex justify-content-between">
+//         <label htmlFor="email">Email</label>
+//         <input ref={emailRef}
+//           id="email"
+//           type="email"
+//           onChange={(e) => {setEmail(e.target.value)}}
+//           placeholder="Email"
+//           name="email" autoComplete="off" 
+//         />
+//         </div><br />
+//         <div className="d-flex justify-content-between">
+//         <label htmlFor="phonenumber">Phone Number</label>
+//         <input ref={phonenumberRef}
+//           id="phonenumber"
+//           type="text"
+//           onChange={(e) => {setPhonenumber(e.target.value)}}
+//           placeholder="PhoneNumber"
+//           name="phonenumber" autoComplete="off" 
+//         />
+//         </div><br />
+//        <div className="d-flex justify-content-between">
+//        <label htmlFor="selectedmfatype">Select MFA Type</label>
+//         <select ref={mfatype}
+//           id="selectedmfatype"
+//           onChange={(e) => {setSelectedmfatype(e.target.value)}}
+//           value={selectedmfatype}
+//           name="selectedmfatype" 
+//         >
+//           <option value="" disabled>Select MFA</option>
+//           <option value="email">Email</option>
+//           <option value="sms">SMS</option>
+//           <option value="qrcode">QR Code</option>
+//         </select>
+//        </div><br />
+//        <div className="d-flex justify-content-between">
+//         <label htmlFor="password">Password</label>
+//        <input ref={passwordRef}
+//           id="password"
+//           type="password"
+//           onChange={(e) => {setPassword(e.target.value)}}
+//           placeholder="Password"
+//           name="password" autoComplete="off" 
+//         />
+//        </div><br />
+//         <div className="d-flex justify-content-between">
+//           <label htmlFor="confirmpassword">Confirm Password</label>
+//           <input ref={confpasswordRef}
+//           id="confirmpassword"
+//           type="password"
+//           onChange={(e) => {setConfirmpassword(e.target.value)}}
+//           placeholder="ConfirmPassword"
+//           name="confirmpassword" autoComplete="off" 
+//           />
+//         </div><br />
+//         <br/>
+//         <div className="d-flex flex-column ">
+//           <button className="w-25 m-auto" type="submit">Register</button>
+//           <p className=" m-auto">Wanna Login?</p>
+//         </div>
+        
+//       </form>
+      
+//       <br />
+//       <Link className="d-flex justify-content-center" to="/login">Please Login Here....</Link>
+//     </div>
+//   );
+// }
+// export default Register;
+
+// ========================
 
 // import React, { useState ,useRef} from "react";
 // import axios from "axios";

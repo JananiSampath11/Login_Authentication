@@ -1,31 +1,40 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const bcrypt = require('bcryptjs');
 const ReactFormDataSchema= require('./Schema')
-// const bcrypt=require("bcryptjs");
-// const jwt = require("jsonwebtoken")
-// const JWT_SECRET="hdsjhcsjdghc3fdsgc()g4dhfcgdshvfcdsgb7dfxdsdbh?bhjhj";
+const auth=require("./AuthToken")
 const app = express();
-const port = 5000;
+// const port = 5000;
+require("dotenv").config();
+const { MONGO_URL, PORT } = process.env;
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 mongoose.set("strictQuery", false);
 mongoose
-  .connect("mongodb+srv://jananisambath11:JwLr9eV5E3bAg5Hi@cluster0.eqzm8f8.mongodb.net/?retryWrites=true&w=majority", {
+  .connect(MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
   .then(() => console.log("MongoDB connected..."));
 
-app.get("/", (req, res) => {
+app.get("/", auth, (req, res) => {
 
-  res.send("Hello World!");
+  // res.send("Hello World!");
 
+  res.status(200).json({
+    status: 'success',
+    message: 'Logged In User Information.',
+    data: {
+      user: {
+          email: req.user.email,
+      },
+    },
+  });
 });
 
 app.post("/register", async (req, res) => {
-  // const encryptedPassword=await bcrypt.hash(password,10);
   try {
     const { username, email, phonenumber,selectedmfatype,password,confirmpassword  } = req.body;
     let exist = await ReactFormDataSchema.findOne({ email });
@@ -40,7 +49,7 @@ app.post("/register", async (req, res) => {
       email,
       selectedmfatype,
       phonenumber,
-      password,
+      password: await bcrypt.hash(req.body.password, 12),
       confirmpassword
     });
     await formData .save();
@@ -57,21 +66,24 @@ app.post("/login", async (req, res) => {
     if (!exist) {
       return res.status(400).send("user not found");
     }
-    if (exist.password !== password) {
-      return res.status(400).send("invalid credentials");
-    }
+    // if (exist.password !== password) {
+    //   return res.status(400).send("invalid credentials");
+    // }
+     if (await bcrypt.compare( password, exist.password)) {
+      const tokenPayload = {
+        email: exist.email,
+      }
+      const accessToken = jwt.sign(tokenPayload, 'SECRET');
+            res.status(201).json({
+                status: 'success',
+                message: 'User Logged In!',
+                data: {
+                  accessToken,
+                },
+              })}
     if(exist){
       return res.status(200).send("successfully logged in");
     }
-    // let payload = {
-    //   user: {
-    //     id: exist.id,
-    //   },
-    // };
-    // jwt.sign(payload, "jwtsecret", { expiresIn: 3600000 }, (err, token) => {
-    //   if (err) throw err;
-    //   return res.json(token);
-    // });
   } catch (err) {
     console.log(err);
     return res.status(500).send("server error");
@@ -79,8 +91,8 @@ app.post("/login", async (req, res) => {
    });
 
 
-app.listen(port, () => {
+app.listen(PORT, () => {
 
-  console.log(`Example app listening on port ${port}`);
+  console.log(`Example app listening on port ${PORT}`);
 
 });
