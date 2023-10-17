@@ -22,10 +22,15 @@ password: {
   type: String,
   required: [true,"Password is required"],
 },
-confirmpassword: {
-  type: String,
-  required: [true,""],
-},
+// confirmpassword: {
+//   type: String,
+//   required: [true,""],
+// },
+token:{
+  type:String,
+  unique: true,
+}
+
 });
 // userSchema.pre("save", async function (next) {
 //     this.password = await bcrypt.hash(this.password, 12);

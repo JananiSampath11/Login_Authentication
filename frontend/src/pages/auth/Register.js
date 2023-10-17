@@ -26,7 +26,12 @@ function Register() {
               phonenumber,
               selectedmfatype,
               password,
-              confirmpassword
+              confirmpassword,
+              headers:{
+                "Content-Type":"application/json",
+                Accept:"application/json",
+                "Access-Control-Allow-Origin":"*",
+            },
             })
             .then((res)=>{
               console.log(res.data);

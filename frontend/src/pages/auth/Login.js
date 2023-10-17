@@ -8,23 +8,44 @@ function Login() {
   const { isAuthenticated, setIsAuthenticated, email, setEmail,password, setPassword } = useContext(AuthContext);
   console.log(email);
   const navigate = useNavigate();
-
   const Submit =async (e) => {
     e.preventDefault();
     await axios.post("http://localhost:5000/login", {
           email,
           password,
+          headers:{
+            "Content-Type":"application/json",
+            Accept:"application/json",
+            "Access-Control-Allow-Origin":"*",
+        },
         })
         .then((res)=>{
           console.log(res.data);
           setIsAuthenticated(true);
+          console.log("first")
+          // localStorage.setItem("Token",JSON.stringify(accessToken));
+
       })
+    //   .then((data)=>{
+    //     console.log(data,"user Login");
+    //     if(data.status =="ok"){
+    //       alert("login successfully!");
+    //       window.localStorage.setItem("token",data.data);
+    //       window.localStorage.setItem("loggedIn",true);
+
+    //       window.location.href="./userDetails"
+    //     }
+    //     else{
+    //       alert("Invalid Credentials")
+    //     }
+    // })
       .catch((error) => {
         console.log(error)
     })
       console.log( email+","+ password)
     localStorage.setItem("Email", JSON.stringify(email));
-    console.log(email);
+    
+    // console.log(email);
     // setIsAuthenticated(true);
   };
   useEffect(() => {

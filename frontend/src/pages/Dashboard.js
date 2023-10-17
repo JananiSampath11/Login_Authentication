@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from "react";
 import {  useNavigate,Link } from "react-router-dom";
 // import { Navigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
-function Dashboard() {
+const Dashboard=()=> {
   console.log(useContext(AuthContext));
 
   const { isAuthenticated } = useContext(AuthContext);
