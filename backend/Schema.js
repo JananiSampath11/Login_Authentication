@@ -6,13 +6,14 @@ const ReactFormDataSchema = new mongoose.Schema({
 },
 email: {
     type: String,
+    lowercase: true,
     required: [true,"Email address is required"],
     unique: true,
 },
 phonenumber: {
   type: String,
   required: [true,"Phonenumber is required"],
-  unique: true,
+  // unique: true,
 },
 selectedmfatype:{
   type: String,
@@ -26,10 +27,10 @@ password: {
 //   type: String,
 //   required: [true,""],
 // },
-token:{
-  type:String,
-  unique: true,
-}
+// accessToken:{
+//   type:String,
+//   unique: true,
+// }
 
 });
 // userSchema.pre("save", async function (next) {

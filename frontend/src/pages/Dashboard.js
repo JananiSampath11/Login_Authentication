@@ -5,7 +5,7 @@ import { AuthContext } from "../context/AuthContext";
 const Dashboard=()=> {
   console.log(useContext(AuthContext));
 
-  const { isAuthenticated } = useContext(AuthContext);
+  const {isAuthenticated, setIsAuthenticated} = useContext(AuthContext);
 
   const navigate = useNavigate();
 
@@ -18,13 +18,18 @@ const Dashboard=()=> {
   }, [isAuthenticated,navigate]);
   // const { isAuthenticated, setIsAuthenticated, email, setEmail } = useContext(AuthContext);
 
-  const uid = JSON.stringify(localStorage.getItem("Email"));
+  const uid = JSON.stringify(localStorage.getItem("Username"));
   console.log(uid);
   const uidval = JSON.parse(uid);
   console.log(uidval);
+  const Logout=()=>{
+    localStorage.clear();
+    setIsAuthenticated(false)
+  }
   return (
     <div>
-      <h1>Welcome to dashoard page @ {uidval}</h1>
+      <h1>Hi {uidval},</h1>
+      <h2>Welcome to dashoard page ! </h2>
       <nav style={{ textAlign: "center", marginTop: "20px" }}>
         <Link to="/" style={{ padding: "10px" }}>
           Dash board
@@ -36,6 +41,7 @@ const Dashboard=()=> {
           Register
         </Link>
       </nav>
+      <button onClick={Logout}>Logout</button>
     </div>
   );
 }

@@ -5,7 +5,7 @@ import { useNavigate, Link } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 
 function Login() {
-  const { isAuthenticated, setIsAuthenticated, email, setEmail,password, setPassword } = useContext(AuthContext);
+  const { isAuthenticated, setIsAuthenticated,email, setEmail,password, setPassword,mfavalue,setMfavalue } = useContext(AuthContext);
   console.log(email);
   const navigate = useNavigate();
   const Submit =async (e) => {
@@ -13,18 +13,23 @@ function Login() {
     await axios.post("http://localhost:5000/login", {
           email,
           password,
+          
           headers:{
             "Content-Type":"application/json",
             Accept:"application/json",
             "Access-Control-Allow-Origin":"*",
+            Authorization : "Bearer jwt_token",
         },
         })
         .then((res)=>{
           console.log(res.data);
-          setIsAuthenticated(true);
+          // setIsAuthenticated(true);
+          // localStorage.setItem('isAuthenticated', true)
           console.log("first")
-          // localStorage.setItem("Token",JSON.stringify(accessToken));
-
+          localStorage.setItem("Token",(res.data.accessToken));
+          localStorage.setItem("Username",(res.data.username));
+          // localStorage.setItem("mfavalue",res.data.mfavalue);
+          setMfavalue(res.data.mfavalue)
       })
     //   .then((data)=>{
     //     console.log(data,"user Login");
@@ -44,15 +49,19 @@ function Login() {
     })
       console.log( email+","+ password)
     localStorage.setItem("Email", JSON.stringify(email));
+    console.log(mfavalue);
     
     // console.log(email);
     // setIsAuthenticated(true);
   };
   useEffect(() => {
-    if (isAuthenticated) {
-      return navigate("/");
+    // if (isAuthenticated) {
+    //   return navigate("/");
+    // }
+    if (mfavalue=="sms" || mfavalue=="email") {
+      return navigate("/otppage");
     }
-  }, [isAuthenticated,navigate]);
+  }, [mfavalue,navigate]);
   // const handleMail = (e) => {
   //   setEmail(e.target.value);
   //   console.log(email);

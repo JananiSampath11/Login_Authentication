@@ -28,7 +28,7 @@ app.get("/", (req, res) => {
     message: 'Logged In User Information.',
     data: {
       user: {
-          email: req.user.email,
+          username: req.user.username,
       },
     },
   });
@@ -36,7 +36,7 @@ app.get("/", (req, res) => {
 
 app.post("/register", async (req, res) => {
   try {
-    const { username, email, phonenumber,selectedmfatype,password,confirmpassword  } = req.body;
+    const { username, email, phonenumber,selectedmfatype,password,confirmpassword } = req.body;
     let exist = await ReactFormDataSchema.findOne({ email });
     const hashedPassword = await bcrypt.hash(req.body.password, 10)
     if (exist) {
@@ -51,7 +51,7 @@ app.post("/register", async (req, res) => {
       selectedmfatype,
       phonenumber,
       password:hashedPassword,
-      confirmpassword
+      // confirmpassword
     });
     await formData .save();
     res.status(200).send("Registered Successfully");
@@ -94,10 +94,12 @@ app.post("/login", async (req, res) => {
   //   return res.status(500).send("server error");
   // }
   // ============
-  if (await bcrypt.compare( password, exist.password)) {
+  if (await bcrypt.compare( password, exist.password),exist.username,exist.
+  selectedmfatype
+  ) {
     const accessToken = generateAccessToken ({email: exist.email,})
     const refreshToken = generateRefreshToken ({email: exist.email,})
-    res.json ({accessToken: accessToken, refreshToken: refreshToken})
+    res.json ({accessToken: accessToken, refreshToken: refreshToken,username:exist.username,mfavalue:exist.selectedmfatype,phone:exist.phonenumber})
     } 
     else {
     res.status(401).send("Password Incorrect!")
@@ -122,6 +124,9 @@ app.post("/login", async (req, res) => {
     jwt.sign(email, process.env.REFRESH_TOKEN_SECRET, {expiresIn: "20m"})
     refreshTokens.push(refreshToken)
     return refreshToken
+    }
+    const phonenumber=()=>{
+      
     }
 app.listen(PORT, () => {
 

@@ -5,6 +5,7 @@ import Register from './pages/auth/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import Dashboard from './pages/Dashboard';
 import Protected from './Protected';
+import OtpPage from './pages/auth/OtpPage';
 
 function App() {
 
@@ -18,7 +19,7 @@ function App() {
 
           <Route path="/login" element={<Login/>}></Route>
 
-          <Route index path="/register" element={<Register/>}></Route>
+          <Route  path="/register" element={<Register/>}></Route>
 
           <Route path="/forgotpassword" element={<ForgotPassword/>}></Route>
           
@@ -26,6 +27,11 @@ function App() {
           <Protected>
             <Dashboard/>
           </Protected>
+          }></Route>
+          <Route path="/Otppage" element={
+          // <Protected>
+            <OtpPage/>
+          // </Protected>
           }></Route>
 
         </Routes>
