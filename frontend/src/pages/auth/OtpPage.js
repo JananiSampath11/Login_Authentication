@@ -9,12 +9,15 @@
 // }
 
 // export default OtpPage
-import React, { useState } from 'react';
+import React, { useEffect, useState,useContext } from 'react';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
+import axios from "axios";
+import { AuthContext } from "../../context/AuthContext";
 
 const OtpPage = () => {
   const [otp, setOtp] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const { isAuthenticated, setIsAuthenticated,email, setEmail,password, setPassword,mfavalue,setMfavalue } = useContext(AuthContext);
 
   const handleOtpChange = (e) => {
     const value = e.target.value;
@@ -23,7 +26,27 @@ const OtpPage = () => {
     // Clear any previous error message
     setErrorMessage('');
   };
-
+  const OTP=async()=>{await axios.post("http://localhost:5000/otppage", {
+    email,
+    password,
+    
+    headers:{
+      "Content-Type":"application/json",
+      Accept:"application/json",
+      "Access-Control-Allow-Origin":"*",
+      Authorization : "Bearer jwt_token",
+  },
+  })
+  .then((res)=>{
+    console.log(res.data);
+    // setIsAuthenticated(true);
+    // localStorage.setItem('isAuthenticated', true)
+    console.log("first")
+    localStorage.setItem("Token",(res.data.accessToken));
+    localStorage.setItem("Username",(res.data.username));
+    // localStorage.setItem("mfavalue",res.data.mfavalue);
+    setMfavalue(res.data.mfavalue)
+})}
   const handleSubmit = (e) => {
     e.preventDefault();
 

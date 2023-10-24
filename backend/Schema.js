@@ -27,10 +27,11 @@ password: {
 //   type: String,
 //   required: [true,""],
 // },
-// accessToken:{
-//   type:String,
-//   unique: true,
-// }
+generatedotp:{
+  type:String,
+  unique: true,
+  required: true,
+}
 
 });
 // userSchema.pre("save", async function (next) {

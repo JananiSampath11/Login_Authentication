@@ -3,7 +3,8 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const jwt = require('jsonwebtoken'); 
 const bcrypt = require('bcryptjs');
-const ReactFormDataSchema= require('./Schema')
+const ReactFormDataSchema= require('./Schema');
+const otpGenerator = require('otp-generator');
 const app = express();
 // const port = 5000;
 require("dotenv").config();
@@ -11,6 +12,12 @@ const { MONGO_URL, PORT } = process.env;
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+const { Vonage } = require('@vonage/server-sdk')
+
+const vonage = new Vonage({
+  apiKey: "636c1d1a",
+  apiSecret: "bnAPRx6qok8WZ6qW"
+})
 mongoose.set("strictQuery", false);
 mongoose
   .connect(MONGO_URL, {
@@ -99,7 +106,7 @@ app.post("/login", async (req, res) => {
   ) {
     const accessToken = generateAccessToken ({email: exist.email,})
     const refreshToken = generateRefreshToken ({email: exist.email,})
-    res.json ({accessToken: accessToken, refreshToken: refreshToken,username:exist.username,mfavalue:exist.selectedmfatype,phone:exist.phonenumber})
+    res.json ({accessToken: accessToken, refreshToken: refreshToken,username:exist.username,mfavalue:exist.selectedmfatype,phone:exist.phonenumber,generatedotp:exist.generatedotp})
     } 
     else {
     res.status(401).send("Password Incorrect!")
@@ -114,7 +121,7 @@ app.post("/login", async (req, res) => {
   const generateAccessToken=(email)=> {
     // return 
     const accessToken = 
-    jwt.sign(email, process.env.ACCESS_TOKEN_SECRET, {expiresIn: "15m"}) 
+    jwt.sign(email, process.env.ACCESS_TOKEN_SECRET, {expiresIn: "1m"}) 
     accessTokens.push(accessToken)
     return accessToken
     }
@@ -125,10 +132,21 @@ app.post("/login", async (req, res) => {
     refreshTokens.push(refreshToken)
     return refreshToken
     }
-    const phonenumber=()=>{
-      
-    }
-app.listen(PORT, () => {
+    
+    // const from = "Vonage APIs"
+    // const to = "918667256092"
+    // const text = 'A text message sent using the Vonage SMS API'
+    
+    // async function sendSMS() {
+    //     await vonage.sms.send({to, from, text})
+    //         .then(resp => { console.log('Message sent successfully'); 
+    //         console.log(resp); 
+    //       })
+    //         .catch(err => { console.log('There was an error sending the messages.'); console.error(err); });
+    // }
+    
+    // sendSMS();
+  app.listen(PORT, () => {
 
   console.log(`Example app listening on port ${PORT}`);
 
